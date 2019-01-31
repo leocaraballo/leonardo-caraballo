@@ -1,8 +1,5 @@
-package topic0.point4;
+package topic0.point3;
 
-/**
- * Mock Connection for the Connection Builder.
- */
 public class ConcreteConnection implements Connection {
 
   private String serverName;
@@ -11,6 +8,15 @@ public class ConcreteConnection implements Connection {
   private String password;
 
   public ConcreteConnection() {
+  }
+
+  public ConcreteConnection(String serverName, String databaseName, String username,
+      String password) {
+
+    this.serverName = serverName;
+    this.databaseName = databaseName;
+    this.username = username;
+    this.password = password;
   }
 
   public String getServerName() {

@@ -1,7 +1,5 @@
 package topic0.point4;
 
-import java.sql.Connection;
-
 /**
  * Class that manage the Connection building process, through the use of a Connection Builder.
  */
@@ -12,7 +10,7 @@ public class Director {
     this.builder = builder;
   }
 
-  public Connection constructConneciton() {
+  public Connection constructConnection() {
     return builder.setServerName("The Best Server")
                   .setDatabaseName("Things")
                   .setUsername("user")

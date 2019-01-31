@@ -1,6 +1,5 @@
 package topic0.point4;
 
-import java.sql.Connection;
 
 public interface ConnectionBuilder {
   Connection build();

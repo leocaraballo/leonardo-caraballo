@@ -1,6 +1,6 @@
 package topic0.point2;
 
-import java.sql.Connection;
+import topic0.point2.mockconnection.Connection;
 import topic0.point2.mockconnection.DerbyConnection;
 import topic0.point2.mockconnection.MysqlConnection;
 import topic0.point2.mockconnection.PgConnection;

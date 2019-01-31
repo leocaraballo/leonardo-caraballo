@@ -1,7 +1,5 @@
 package topic0.point4;
 
-import java.sql.Connection;
-
 public class ConcreteConnectionBuilder implements ConnectionBuilder {
 
   private ConcreteConnection tempConnection;
