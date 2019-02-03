@@ -5,11 +5,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CalculatorTest {
   private static final double DELTA_TEST = 0.0;
 
+  @Ignore("Ignore getter/setter test for operandA")
   @Test
   public void getSetOperandA() {
     Calculator calculator = new Calculator(12.0, 0.0);
@@ -19,6 +21,7 @@ public class CalculatorTest {
     assertEquals(calculator.getOperandA(), 54.0, DELTA_TEST);
   }
 
+  @Ignore("Ignore getter/setter test for operandB")
   @Test
   public void getSetOperandB() {
     Calculator calculator = new Calculator(0.0, 36.0);

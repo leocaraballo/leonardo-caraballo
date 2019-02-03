@@ -20,6 +20,8 @@
     <junit.version>4.12</junit.version>
     <log4j.core.version>2.11.1</log4j.core.version>
     <log4j.api.version>2.11.1</log4j.api.version>
+
+    <maven.test.skip>true</maven.test.skip>
   </properties>
 
   <dependencies>
