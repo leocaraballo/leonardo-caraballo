@@ -11,6 +11,10 @@ import point2.mockconnection.PgConnection;
  */
 public class OpenSourceConnectionFactory extends AbstractConnectionFactory {
 
+  private static final String MYSQL = "mysql";
+  private static final String POSTGRES = "postgres";
+  private static final String DERBY = "derby";
+
   @Override
   public Connection createConnection(String dbmsName, ConnectionInfo info)
       throws DbmsNotFoundException {
@@ -19,11 +23,11 @@ public class OpenSourceConnectionFactory extends AbstractConnectionFactory {
       return null;
     }
 
-    if (dbmsName.equalsIgnoreCase("mysql")) {
+    if (MYSQL.equalsIgnoreCase(dbmsName)) {
       return new MysqlConnection(info);
-    } else if (dbmsName.equalsIgnoreCase("postgres")) {
+    } else if (POSTGRES.equalsIgnoreCase(dbmsName)) {
       return new PgConnection(info);
-    } else if (dbmsName.equalsIgnoreCase("derby")) {
+    } else if (DERBY.equalsIgnoreCase(dbmsName)) {
       return new DerbyConnection(info);
     }
 

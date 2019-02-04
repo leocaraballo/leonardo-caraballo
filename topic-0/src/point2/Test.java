@@ -8,11 +8,11 @@ public class Test {
     ConnectionInfo info = new ConnectionInfo("The Best Server", "Things",
         "user", "pass");
     AbstractConnectionFactory connectionFactory =
-        ConnectionFactoryProducer.getConnectionFactory(true);
+        ConnectionFactoryProducer.getConnectionFactory(false);
     Connection connection = null;
 
     try {
-      connection = connectionFactory.createConnection("mysql", info);
+      connection = connectionFactory.createConnection("oracle", info);
     } catch (DbmsNotFoundException ex) {
       System.out.println(ex.getMessage());
     }

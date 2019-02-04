@@ -10,6 +10,9 @@ import point2.mockconnection.SqlServerConnection;
  */
 public class PropietaryConnectionFactory extends AbstractConnectionFactory {
 
+  public static final String SQL_SERVER = "sqlserver";
+  public static final String ORACLE = "oracle";
+
   @Override
   public Connection createConnection(String dbmsName, ConnectionInfo info)
       throws DbmsNotFoundException {
@@ -18,9 +21,9 @@ public class PropietaryConnectionFactory extends AbstractConnectionFactory {
       return null;
     }
 
-    if (dbmsName.equalsIgnoreCase("sqlserver")) {
+    if (SQL_SERVER.equalsIgnoreCase(dbmsName)) {
       return new SqlServerConnection(info);
-    } else if (dbmsName.equalsIgnoreCase("oracle")) {
+    } else if (ORACLE.equalsIgnoreCase(dbmsName)) {
       return new OracleConnection(info);
     }
 
