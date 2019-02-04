@@ -23,15 +23,22 @@ public class OpenSourceConnectionFactory extends AbstractConnectionFactory {
       return null;
     }
 
-    if (MYSQL.equalsIgnoreCase(dbmsName)) {
-      return new MysqlConnection(info);
-    } else if (POSTGRES.equalsIgnoreCase(dbmsName)) {
-      return new PgConnection(info);
-    } else if (DERBY.equalsIgnoreCase(dbmsName)) {
-      return new DerbyConnection(info);
-    }
+    Connection connection = null;
 
-    throw new DbmsNotFoundException("Can't find '" + dbmsName + "' connection class.");
+    switch (dbmsName.toLowerCase()) {
+      case MYSQL:
+        connection = new MysqlConnection(info);
+        break;
+      case POSTGRES:
+        connection = new PgConnection(info);
+        break;
+      case DERBY:
+        connection = new DerbyConnection(info);
+        break;
+      default:
+        throw new DbmsNotFoundException("Can't find '" + dbmsName + "' connection class.");
+    }
+    return connection;
   }
 
 }

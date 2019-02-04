@@ -21,12 +21,19 @@ public class PropietaryConnectionFactory extends AbstractConnectionFactory {
       return null;
     }
 
-    if (SQL_SERVER.equalsIgnoreCase(dbmsName)) {
-      return new SqlServerConnection(info);
-    } else if (ORACLE.equalsIgnoreCase(dbmsName)) {
-      return new OracleConnection(info);
+    Connection connection = null;
+
+    switch (dbmsName.toLowerCase()) {
+      case SQL_SERVER:
+        connection = new SqlServerConnection(info);
+        break;
+      case ORACLE:
+        connection = new OracleConnection(info);
+        break;
+      default:
+        throw new DbmsNotFoundException("Can't find '" + dbmsName + "' connection class.");
     }
 
-    throw new DbmsNotFoundException("Can't find '" + dbmsName + "' connection class.");
+    return connection;
   }
 }
