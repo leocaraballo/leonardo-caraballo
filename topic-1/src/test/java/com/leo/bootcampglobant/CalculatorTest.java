@@ -14,20 +14,20 @@ public class CalculatorTest {
   @Test
   public void getSetOperandA() {
     Calculator calculator = new Calculator(12.0, 0.0);
-    assertEquals(calculator.getOperandA(), 12.0, DELTA_TEST);
+    assertEquals(12.0, calculator.getOperandA(), DELTA_TEST);
 
     calculator.setOperandA(54.0);
-    assertEquals(calculator.getOperandA(), 54.0, DELTA_TEST);
+    assertEquals(54.0, calculator.getOperandA(), DELTA_TEST);
   }
 
   @Ignore("Ignore getter/setter test for operandB")
   @Test
   public void getSetOperandB() {
     Calculator calculator = new Calculator(0.0, 36.0);
-    assertEquals(calculator.getOperandB(), 36.0, DELTA_TEST);
+    assertEquals(36.0, calculator.getOperandB(), DELTA_TEST);
 
     calculator.setOperandB(99.0);
-    assertEquals(calculator.getOperandB(), 99.0, DELTA_TEST);
+    assertEquals(99.0, calculator.getOperandB(), DELTA_TEST);
   }
 
   @Test
@@ -36,7 +36,7 @@ public class CalculatorTest {
     calculator.setOperandA(14.0);
     calculator.setOperandB(87.0);
 
-    assertEquals(calculator.sum(), 101.0, DELTA_TEST);
+    assertEquals(14.0 + 87.0, calculator.sum(), DELTA_TEST);
   }
 
   @Test
@@ -45,7 +45,7 @@ public class CalculatorTest {
     calculator.setOperandA(100.0);
     calculator.setOperandB(50.0);
 
-    assertEquals(calculator.substract(), 50.0, DELTA_TEST);
+    assertEquals( 100.0 - 50.0, calculator.substract(), DELTA_TEST);
   }
 
   @Test
@@ -54,7 +54,7 @@ public class CalculatorTest {
     calculator.setOperandA(59.0);
     calculator.setOperandB(37.0);
 
-    assertEquals(calculator.multiply(), 2183.0, DELTA_TEST);
+    assertEquals(59.0 * 37.0, calculator.multiply(), DELTA_TEST);
   }
 
   @Test
@@ -63,7 +63,7 @@ public class CalculatorTest {
     calculator.setOperandA(140.0);
     calculator.setOperandB(2.0);
 
-    assertEquals(calculator.divide(), 70.0, DELTA_TEST);
+    assertEquals(140.0 / 2.0, calculator.divide(), DELTA_TEST);
   }
 
   @Test
