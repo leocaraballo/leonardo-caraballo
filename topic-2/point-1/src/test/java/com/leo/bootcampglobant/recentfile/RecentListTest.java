@@ -85,4 +85,13 @@ public class RecentListTest {
     recentList.setSizeLimit(15);
     assertEquals(15, recentList.getSizeLimit());
   }
+
+  @Test
+  public void getSizeLimit_fromContructor() {
+    RecentList<String> recentList = new RecentList<>(20);
+
+    assertEquals(20, recentList.getSizeLimit());
+  }
+
+
 }

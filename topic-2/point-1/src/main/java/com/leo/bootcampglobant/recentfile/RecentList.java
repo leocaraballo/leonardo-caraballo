@@ -13,8 +13,17 @@ public class RecentList<T> implements RecentCollection<T> {
 
   private static final int DEFAULT_SIZE_LIMIT = 15;
 
-  private List<T> items = new LinkedList<>();
-  private int sizeLimit = DEFAULT_SIZE_LIMIT;
+  private List<T> items;
+  private int sizeLimit;
+
+  public RecentList(int sizeLimit) {
+    this.items = new LinkedList<>();
+    this.sizeLimit = sizeLimit;
+  }
+
+  public RecentList() {
+    this(DEFAULT_SIZE_LIMIT);
+  }
 
   @Override
   public List<T> getList() {
