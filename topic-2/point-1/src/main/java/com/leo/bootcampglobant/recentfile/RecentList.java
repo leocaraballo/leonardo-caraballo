@@ -20,7 +20,7 @@ public class RecentList<T> implements RecentCollection<T> {
 
   @Override
   public void add(T element) {
-    items.add(element);
+    items.add(0, element);
   }
 
   @Override

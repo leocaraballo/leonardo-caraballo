@@ -26,4 +26,12 @@ public class RecentListTest {
     assertEquals("Element 1", recentList.getList().get(0));
   }
 
+  @Test
+  public void add_twoElements() {
+    RecentList<String> recentList = new RecentList<>();
+    recentList.add("Element 1");
+    recentList.add("Last Element");
+    assertEquals("Last Element", recentList.getList().get(0));
+  }
+
 }
