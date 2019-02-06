@@ -3,6 +3,9 @@ package com.leo.bootcampglobant.recentfile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Test;
 
 public class RecentListTest {
@@ -34,4 +37,18 @@ public class RecentListTest {
     assertEquals("Last Element", recentList.getList().get(0));
   }
 
+  @Test
+  public void add_multipleElementsCorrectOrder() {
+    RecentList<String> recentList = new RecentList<>();
+    String[] testStrings = {"Element 1", "Another element", "And another one", "Test String",
+        "Yet another string", "Last String"};
+
+    for (String s : testStrings) {
+      recentList.add(s);
+    }
+
+    List<String> expected = Arrays.asList(testStrings);
+    Collections.reverse(expected);
+    assertEquals(expected, recentList.getList());
+  }
 }
