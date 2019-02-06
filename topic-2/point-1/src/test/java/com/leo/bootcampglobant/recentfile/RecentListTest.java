@@ -51,4 +51,14 @@ public class RecentListTest {
     Collections.reverse(expected);
     assertEquals(expected, recentList.getList());
   }
+
+  @Test
+  public void add_noRepetition() {
+    RecentList<String> recentList = new RecentList<>();
+
+    recentList.add("Elemento unico");
+    recentList.add("Elemento unico");
+    assertEquals(1, recentList.getList().size());
+    assertEquals("Elemento unico", recentList.getList().get(0));
+  }
 }
