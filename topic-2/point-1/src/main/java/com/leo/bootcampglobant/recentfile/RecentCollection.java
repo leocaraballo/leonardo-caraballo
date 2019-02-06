@@ -32,5 +32,5 @@ public interface RecentCollection<T> {
    */
   int getSizeLimit();
 
-  void setSizeLimit();
+  void setSizeLimit(int sizeLimit);
 }

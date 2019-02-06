@@ -11,7 +11,10 @@ import java.util.List;
  */
 public class RecentList<T> implements RecentCollection<T> {
 
+  private static final int DEFAULT_SIZE_LIMIT = 15;
+
   private List<T> items = new LinkedList<>();
+  private int sizeLimit = DEFAULT_SIZE_LIMIT;
 
   @Override
   public List<T> getList() {
@@ -27,11 +30,11 @@ public class RecentList<T> implements RecentCollection<T> {
 
   @Override
   public int getSizeLimit() {
-    return 0;
+    return sizeLimit;
   }
 
   @Override
-  public void setSizeLimit() {
-
+  public void setSizeLimit(int sizeLimit) {
+    this.sizeLimit = sizeLimit;
   }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 public class RecentListTest {
+
   @Test
   public void getList_emptyOnFirstTime() {
     RecentList<String> recentList = new RecentList<>();
@@ -56,9 +57,32 @@ public class RecentListTest {
   public void add_noRepetition() {
     RecentList<String> recentList = new RecentList<>();
 
-    recentList.add("Elemento unico");
-    recentList.add("Elemento unico");
-    assertEquals(1, recentList.getList().size());
-    assertEquals("Elemento unico", recentList.getList().get(0));
+    recentList.add("Unique element");
+    recentList.add("Last one");
+    recentList.add("Another string");
+    recentList.add("Last one");
+    recentList.add("Another string");
+    recentList.add("Unique element");
+    assertEquals(3, recentList.getList().size());
+  }
+
+  @Test
+  public void add_BumpToFront() {
+    RecentList<String> recentList = new RecentList<>();
+
+    recentList.add("Unique element");
+    recentList.add("Just a normal String");
+    recentList.add("The one true String");
+    recentList.add("Unique element");
+
+    assertEquals("Unique element", recentList.getList().get(0));
+  }
+
+  @Test
+  public void getSetSizeLimit() {
+    RecentList<String> recentList = new RecentList<>();
+
+    recentList.setSizeLimit(15);
+    assertEquals(15, recentList.getSizeLimit());
   }
 }
