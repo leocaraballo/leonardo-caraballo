@@ -31,7 +31,7 @@ public class RecentListTest {
   }
 
   @Test
-  public void add_twoElements() {
+  public void add_twoElementsOrderByRecent() {
     RecentList<String> recentList = new RecentList<>();
     recentList.add("Element 1");
     recentList.add("Last Element");
