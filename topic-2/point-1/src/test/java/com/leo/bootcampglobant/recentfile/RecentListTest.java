@@ -24,22 +24,7 @@ public class RecentListTest {
   }
 
   @Test
-  public void add_oneElement() {
-    RecentList<String> recentList = new RecentList<>();
-    recentList.add("Element 1");
-    assertEquals("Element 1", recentList.getList().get(0));
-  }
-
-  @Test
-  public void add_twoElementsOrderByRecent() {
-    RecentList<String> recentList = new RecentList<>();
-    recentList.add("Element 1");
-    recentList.add("Last Element");
-    assertEquals("Last Element", recentList.getList().get(0));
-  }
-
-  @Test
-  public void add_multipleElementsCorrectOrder() {
+  public void add_uniqueElementsCorrectOrder() {
     RecentList<String> recentList = new RecentList<>();
     String[] testStrings = {"Element 1", "Another element", "And another one", "Test String",
         "Yet another string", "Last String"};
@@ -63,11 +48,13 @@ public class RecentListTest {
     recentList.add("Last one");
     recentList.add("Another string");
     recentList.add("Unique element");
-    assertEquals(3, recentList.getList().size());
+
+    assertEquals(Arrays.asList("Unique element", "Another string", "Last one"),
+        recentList.getList());
   }
 
   @Test
-  public void add_BumpToFront() {
+  public void add_bumpToFront() {
     RecentList<String> recentList = new RecentList<>();
 
     recentList.add("Unique element");
@@ -76,6 +63,23 @@ public class RecentListTest {
     recentList.add("Unique element");
 
     assertEquals("Unique element", recentList.getList().get(0));
+  }
+
+  @Test
+  public void add_removeOldestAfterReachingSizeLimit() {
+    RecentList<String> recentList = new RecentList<>();
+
+    recentList.setSizeLimit(4);
+
+    recentList.add("Should be removed");
+    recentList.add("This one too");
+    recentList.add("One element");
+    recentList.add("Element two");
+    recentList.add("String three");
+    recentList.add("Final string");
+
+    assertEquals(Arrays.asList("Final string", "String three", "Element two", "One element"),
+        recentList.getList());
   }
 
   @Test
@@ -93,5 +97,50 @@ public class RecentListTest {
     assertEquals(20, recentList.getSizeLimit());
   }
 
+  @Test
+  public void setSizeLimit_smallerSizeAfterInsertions() {
+    RecentList<String> recentList = new RecentList<>(10);
 
+    recentList.add("Should be removed");
+    recentList.add("Remove this too");
+    recentList.add("One element");
+    recentList.add("Element two");
+    recentList.add("String three");
+    recentList.add("Final string");
+
+    recentList.setSizeLimit(4);
+
+    assertEquals(Arrays.asList("Final string", "String three", "Element two", "One element"),
+        recentList.getList());
+  }
+
+  @Test
+  public void setSizeLimit_greaterSizeAfterInsertions() {
+    RecentList<String> recentList = new RecentList<>(4);
+
+    recentList.add("One element");
+    recentList.add("Element two");
+    recentList.add("String three");
+    recentList.add("Final string");
+
+    recentList.setSizeLimit(20);
+
+    assertEquals(Arrays.asList("Final string", "String three", "Element two", "One element"),
+        recentList.getList());
+  }
+
+  @Test
+  public void setSizeLimit_sameSizeAfterInsertions() {
+    RecentList<String> recentList = new RecentList<>(4);
+
+    recentList.add("One element");
+    recentList.add("Element two");
+    recentList.add("String three");
+    recentList.add("Final string");
+
+    recentList.setSizeLimit(4);
+
+    assertEquals(Arrays.asList("Final string", "String three", "Element two", "One element"),
+        recentList.getList());
+  }
 }
