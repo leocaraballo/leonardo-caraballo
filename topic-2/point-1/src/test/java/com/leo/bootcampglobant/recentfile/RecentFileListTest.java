@@ -23,11 +23,11 @@ public class RecentFileListTest {
   }
 
   @Test
-  public void add_uniqueFiles() {
-    recentFileList.addFile(new File("BestClass.java"));
-    recentFileList.addFile(new File("Documentation.txt"));
-    recentFileList.addFile(new File("Spreadsheet.csv"));
-    recentFileList.addFile(new File("MyDatabase.sql"));
+  public void openFile_uniqueFiles() {
+    recentFileList.openFile(new File("BestClass.java"));
+    recentFileList.openFile(new File("Documentation.txt"));
+    recentFileList.openFile(new File("Spreadsheet.csv"));
+    recentFileList.openFile(new File("MyDatabase.sql"));
 
     assertEquals(Arrays.asList(new File("MyDatabase.sql"), new File("Spreadsheet.csv"),
         new File("Documentation.txt"), new File("BestClass.java")),
@@ -35,15 +35,15 @@ public class RecentFileListTest {
   }
 
   @Test
-  public void add_duplicateFiles() {
-    recentFileList.addFile(new File("Documentation.txt"));
-    recentFileList.addFile(new File("Spreadsheet.csv"));
-    recentFileList.addFile(new File("Documentation.txt"));
-    recentFileList.addFile(new File("BestClass.java"));
-    recentFileList.addFile(new File("BestClass.java"));
-    recentFileList.addFile(new File("Documentation.txt"));
-    recentFileList.addFile(new File("Spreadsheet.csv"));
-    recentFileList.addFile(new File("MyDatabase.sql"));
+  public void openFile_duplicateFiles() {
+    recentFileList.openFile(new File("Documentation.txt"));
+    recentFileList.openFile(new File("Spreadsheet.csv"));
+    recentFileList.openFile(new File("Documentation.txt"));
+    recentFileList.openFile(new File("BestClass.java"));
+    recentFileList.openFile(new File("BestClass.java"));
+    recentFileList.openFile(new File("Documentation.txt"));
+    recentFileList.openFile(new File("Spreadsheet.csv"));
+    recentFileList.openFile(new File("MyDatabase.sql"));
 
     assertEquals(Arrays.asList(new File("MyDatabase.sql"), new File("Spreadsheet.csv"),
         new File("Documentation.txt"), new File("BestClass.java")),
@@ -51,16 +51,16 @@ public class RecentFileListTest {
   }
 
   @Test
-  public void add_exceedSizeLimit() {
+  public void openFile_exceedSizeLimit() {
     // size limit is 5
-    recentFileList.addFile(new File("File1.txt"));
-    recentFileList.addFile(new File("File2.docx"));
-    recentFileList.addFile(new File("File3.png"));
-    recentFileList.addFile(new File("File3.png"));
-    recentFileList.addFile(new File("File4.mp4"));
-    recentFileList.addFile(new File("File5.java"));
-    recentFileList.addFile(new File("File5.java"));
-    recentFileList.addFile(new File("File6.sql"));
+    recentFileList.openFile(new File("File1.txt"));
+    recentFileList.openFile(new File("File2.docx"));
+    recentFileList.openFile(new File("File3.png"));
+    recentFileList.openFile(new File("File3.png"));
+    recentFileList.openFile(new File("File4.mp4"));
+    recentFileList.openFile(new File("File5.java"));
+    recentFileList.openFile(new File("File5.java"));
+    recentFileList.openFile(new File("File6.sql"));
 
     assertEquals(Arrays.asList(new File("File6.sql"), new File("File5.java"),
         new File("File4.mp4"), new File("File3.png"), new File("File2.docx")),

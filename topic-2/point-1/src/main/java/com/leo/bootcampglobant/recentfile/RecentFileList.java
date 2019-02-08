@@ -11,7 +11,7 @@ public class RecentFileList {
     this.list = new RecentList<>(sizeLimit);
   }
 
-  public void addFile(File file) {
+  public void openFile(File file) {
     list.add(file);
   }
 
