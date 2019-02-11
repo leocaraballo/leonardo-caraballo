@@ -32,11 +32,11 @@ public class RecentList<T> implements RecentCollection<T> {
 
   @Override
   public void add(T element) {
+    //remove if exist
+    items.remove(element);
     if (items.size() == sizeLimit) {
       items.remove(sizeLimit - 1);
     }
-    //remove if exist
-    items.remove(element);
     items.add(0, element);
   }
 
