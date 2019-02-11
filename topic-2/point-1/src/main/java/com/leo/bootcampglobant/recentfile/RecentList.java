@@ -32,30 +32,12 @@ public class RecentList<T> implements RecentCollection<T> {
 
   @Override
   public void add(T element) {
-    removeOldest();
-    //remove if exist
-    items.remove(element);
-    items.add(0, element);
-  }
-
-  /**
-   * Removes the last element (oldest) of the list if the size limit is going to be surpassed.
-   */
-  private void removeOldest() {
     if (items.size() == sizeLimit) {
       items.remove(sizeLimit - 1);
     }
-  }
-
-  /**
-   * Removes the lasts elements (oldest) of the list if the size limit changed to a smaller number.
-   *
-   * @param newSizeLimit the new size limit value.
-   */
-  private void removeOldest(int newSizeLimit) {
-    if (newSizeLimit < items.size()) {
-      items.subList(newSizeLimit, items.size()).clear();
-    }
+    //remove if exist
+    items.remove(element);
+    items.add(0, element);
   }
 
   @Override
@@ -65,7 +47,10 @@ public class RecentList<T> implements RecentCollection<T> {
 
   @Override
   public void setSizeLimit(int sizeLimit) {
-    removeOldest(sizeLimit);
+    if (sizeLimit < items.size()) {
+      //remove the oldest elements
+      items.subList(sizeLimit, items.size()).clear();
+    }
     this.sizeLimit = sizeLimit;
   }
 }
