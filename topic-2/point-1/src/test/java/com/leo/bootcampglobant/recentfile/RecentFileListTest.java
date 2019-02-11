@@ -5,16 +5,24 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
 public class RecentFileListTest {
 
+  private static final List<File> correctFileList = Arrays.asList(
+      new File("MyDatabase.sql"),
+      new File("Spreadsheet.csv"),
+      new File("Documentation.txt"),
+      new File("BestClass.java")
+  );
+
   private RecentFileList recentFileList;
 
   @Before
   public void initialize() {
-    recentFileList = new RecentFileList(5);
+    recentFileList = new RecentFileList(4);
   }
 
   @Test
@@ -29,9 +37,7 @@ public class RecentFileListTest {
     recentFileList.openFile(new File("Spreadsheet.csv"));
     recentFileList.openFile(new File("MyDatabase.sql"));
 
-    assertEquals(Arrays.asList(new File("MyDatabase.sql"), new File("Spreadsheet.csv"),
-        new File("Documentation.txt"), new File("BestClass.java")),
-        recentFileList.getFiles());
+    assertEquals(correctFileList, recentFileList.getFiles());
   }
 
   @Test
@@ -45,26 +51,25 @@ public class RecentFileListTest {
     recentFileList.openFile(new File("Spreadsheet.csv"));
     recentFileList.openFile(new File("MyDatabase.sql"));
 
-    assertEquals(Arrays.asList(new File("MyDatabase.sql"), new File("Spreadsheet.csv"),
-        new File("Documentation.txt"), new File("BestClass.java")),
-        recentFileList.getFiles());
+    assertEquals(correctFileList, recentFileList.getFiles());
   }
 
   @Test
   public void openFile_exceedSizeLimit() {
-    // size limit is 5
-    recentFileList.openFile(new File("File1.txt"));
-    recentFileList.openFile(new File("File2.docx"));
-    recentFileList.openFile(new File("File3.png"));
-    recentFileList.openFile(new File("File3.png"));
-    recentFileList.openFile(new File("File4.mp4"));
-    recentFileList.openFile(new File("File5.java"));
-    recentFileList.openFile(new File("File5.java"));
-    recentFileList.openFile(new File("File6.sql"));
+    // size limit is 4
+    recentFileList.openFile(new File("oldIndex.htm"));
+    recentFileList.openFile(new File("importantList.doc"));
+    recentFileList.openFile(new File("myPicture.bmp"));
+    recentFileList.openFile(new File("Documentation.txt"));
+    recentFileList.openFile(new File("Spreadsheet.csv"));
+    recentFileList.openFile(new File("Documentation.txt"));
+    recentFileList.openFile(new File("BestClass.java"));
+    recentFileList.openFile(new File("BestClass.java"));
+    recentFileList.openFile(new File("Documentation.txt"));
+    recentFileList.openFile(new File("Spreadsheet.csv"));
+    recentFileList.openFile(new File("MyDatabase.sql"));
 
-    assertEquals(Arrays.asList(new File("File6.sql"), new File("File5.java"),
-        new File("File4.mp4"), new File("File3.png"), new File("File2.docx")),
-        recentFileList.getFiles());
+    assertEquals(correctFileList, recentFileList.getFiles());
 
   }
 }
