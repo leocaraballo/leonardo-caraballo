@@ -30,6 +30,17 @@ public class RecentList<T> implements RecentCollection<T> {
     return Collections.unmodifiableList(items);
   }
 
+  /**
+   * Inserts an element at the front of the list. If the element was inserted before, its swapped
+   * from its original position to the front of the list.
+   *
+   * @implSpec This element type should implement a custom <code>equals</code> (and therefore a
+   *           custom <code>hashCode</code>) method, so that this method can correctly remove
+   *           duplicates elements. Failing to do so would result in a List with repeated
+   *           elements.
+   * @param element element to be added (or bumped to the front) in the collection. Should
+   *        implement a custom equals method.
+   */
   @Override
   public void add(T element) {
     //remove if exist
