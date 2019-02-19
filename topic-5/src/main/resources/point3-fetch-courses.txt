@@ -1,0 +1,5 @@
+use high-school
+
+in_teacher_id = 1
+
+db.teachers.find({_id: in_teacher_id}, {_id: 0, "dictates.course_name": 1}).sort({"dictates.course_name" : 1})

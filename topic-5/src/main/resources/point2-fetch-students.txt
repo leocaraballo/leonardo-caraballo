@@ -1,0 +1,5 @@
+use high-school
+
+in_course_id = 1
+
+db.students.find({assist: {$elemMatch: {course_id: in_course_id, grade_final: {$gt: 4}}}})

@@ -1,0 +1,372 @@
+use high-school
+
+db.courses.insertMany([
+  {
+    _id: 1,
+    name: 'Introduction to Computer Science',
+    week_hours: 6,
+    schedule: 
+    [
+      {day: 'Monday', time_start: '08:00', time_end: '10:00'},
+      {day: 'Wednesday', time_start: '10:00', time_end: '12:00'},
+      {day: 'Friday', time_start: '14:00', time_end: '16:00'}
+    ]
+  },
+  {
+    _id: 2,
+    name: 'Discrete Mathematics',
+    week_hours: 4,
+    schedule: 
+    [
+      {day: 'Tuesday', time_start: '08:00', time_end: '10:00'},
+      {day: 'Thursday', time_start: '16:00', time_end: '18:00'}      
+    ]
+  },
+  {
+    _id: 3,
+    name: 'Fundamentals of Programming',
+    week_hours: 4,
+    schedule: 
+    [
+      {day: 'Monday', time_start: '10:00', time_end: '12:00'},
+      {day: 'Saturday', time_start: '08:00', time_end: '10:00'}
+    ]
+  }
+])
+
+db.teachers.insertMany([
+  {
+    _id: 1,
+    first_name: 'Amalita',
+    last_name: 'Degoy',
+    birth_date: ISODate("1995-03-07T04:20:04.000Z"),
+    dictates:
+    [
+      {course_name: 'Introduction to Computer Science'}
+    ]
+  },
+  {
+    _id: 2,
+    first_name: 'Jodee',
+    last_name: 'Fullylove',
+    birth_date: ISODate("1999-03-12T00:23:08.000Z"),
+    dictates:
+    [
+      {course_name: 'Discrete Mathematics'}
+    ]
+  },
+  {
+    _id: 3,
+    first_name: 'Avrom',
+    last_name: 'McRill',
+    birth_date: ISODate("1988-10-22T17:34:34.000Z"),
+    dictates:
+    [
+      {course_name: 'Fundamentals of Programming'}
+    ]
+  }
+])
+
+db.students.insertMany([
+  {
+    registration_number: 1,
+    first_name: 'Hetti',
+    last_name: 'Harmon',
+    birth_date: ISODate("1999-12-04 07:52:25"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 7, grade_2: 6, grade_3: 8, grade_final: 9}
+    ]
+  },
+  {
+    registration_number: 2,
+    first_name: 'Noby',
+    last_name: 'Shewan',
+    birth_date: ISODate("1999-11-26 22:45:56"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 1, grade_2: 9, grade_3: 3, grade_final: 6}
+    ]
+  },
+  {
+    registration_number: 3,
+    first_name: 'Georgy',
+    last_name: 'Mieville',
+    birth_date: ISODate("1991-09-07 18:00:50"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 7, grade_2: 4, grade_3: 2, grade_final: 4}
+    ]
+  },
+  {
+    registration_number: 4,
+    first_name: 'Tristan',
+    last_name: 'Harsent',
+    birth_date: ISODate("1997-02-02 01:46:52"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 8, grade_2: 6, grade_3: 8, grade_final: 9}
+    ]
+  },
+  {
+    registration_number: 5,
+    first_name: 'Dina',
+    last_name: 'Gannicott',
+    birth_date: ISODate("1990-01-25 06:36:00"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 2, grade_2: 9, grade_3: 3, grade_final: 9}
+    ]
+  },
+  {
+    registration_number: 6,
+    first_name: 'Win',
+    last_name: 'Duell',
+    birth_date: ISODate("1983-07-06 01:57:35"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 7, grade_2: 10, grade_3: 6, grade_final: 7}
+    ]
+  },
+  {
+    registration_number: 7,
+    first_name: 'Shaine',
+    last_name: 'Shrubsall',
+    birth_date: ISODate("1986-11-19 11:18:50"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 2, grade_2: 6, grade_3: 4, grade_final: 7}
+    ]
+  },
+  {
+    registration_number: 8,
+    first_name: 'Walther',
+    last_name: 'Rebanks',
+    birth_date: ISODate("1991-07-28 23:17:56"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 6, grade_2: 7, grade_3: 4, grade_final: 4}
+    ]
+  },
+  {
+    registration_number: 9,
+    first_name: 'Amil',
+    last_name: 'Weathey',
+    birth_date: ISODate("1989-11-25 11:44:48"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 1, grade_2: 10, grade_3: 3, grade_final: 7}
+    ]
+  },
+  {
+    registration_number: 10,
+    first_name: 'Fionnula',
+    last_name: 'Kipping',
+    birth_date: ISODate("1989-11-21 22:35:17"),
+    assist:
+    [
+      {course_id: 1, year: 2018, grade_1: 9, grade_2: 5, grade_3: 8, grade_final: 1}
+    ]
+  },
+  {
+    registration_number: 11,
+    first_name: 'Salome',
+    last_name: 'Osban',
+    birth_date: ISODate("1999-08-06 23:13:49"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 6, grade_2: 1, grade_3: 5, grade_final: 7}
+    ]
+  },
+  {
+    registration_number: 12,
+    first_name: 'Darnall',
+    last_name: 'Brugemann',
+    birth_date: ISODate("1988-02-19 20:20:56"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 5, grade_2: 10, grade_3: 5, grade_final: 9}
+    ]
+  },
+  {
+    registration_number: 13,
+    first_name: 'Hinda',
+    last_name: 'Flippini',
+    birth_date: ISODate("1989-07-02 10:34:57"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 4, grade_2: 3, grade_3: 3, grade_final: 2}
+    ]
+  },
+  {
+    registration_number: 14,
+    first_name: 'Norbert',
+    last_name: 'Zanassi',
+    birth_date: ISODate("1991-07-06 11:54:56"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 3, grade_2: 2, grade_3: 8, grade_final: 4}
+    ]
+  },
+  {
+    registration_number: 15,
+    first_name: 'Iris',
+    last_name: 'Wanne',
+    birth_date: ISODate("1983-11-25 05:42:51"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 9, grade_2: 8, grade_3: 3, grade_final: 8}
+    ]
+  },
+  {
+    registration_number: 16,
+    first_name: 'Ki',
+    last_name: 'Wakeman',
+    birth_date: ISODate("2000-11-24 01:50:39"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 4, grade_2: 1, grade_3: 5, grade_final: 4}
+    ]
+  },
+  {
+    registration_number: 17,
+    first_name: 'Clary',
+    last_name: 'Sjollema',
+    birth_date: ISODate("1980-10-30 16:37:31"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 5, grade_2: 1, grade_3: 1, grade_final: 4}
+    ]
+  },
+  {
+    registration_number: 18,
+    first_name: 'Stefa',
+    last_name: 'Huntar',
+    birth_date: ISODate("1990-05-31 15:06:11"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 1, grade_2: 1, grade_3: 9, grade_final: 1}
+    ]
+  },
+  {
+    registration_number: 19,
+    first_name: 'Sinclare',
+    last_name: 'Patey',
+    birth_date: ISODate("1987-09-26 08:14:54"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 1, grade_2: 9, grade_3: 9, grade_final: 9}
+    ]
+  },
+  {
+    registration_number: 20,
+    first_name: 'Solomon',
+    last_name: 'Hemms',
+    birth_date: ISODate("1982-05-02 12:06:04"),
+    assist:
+    [
+      {course_id: 2, year: 2018, grade_1: 9, grade_2: 1, grade_3: 4, grade_final: 6}
+    ]
+  },
+  {
+    registration_number: 21,
+    first_name: 'Aluin',
+    last_name: 'Paterson',
+    birth_date: ISODate("1988-05-01 22:56:27"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 9, grade_2: 4, grade_3: 10, grade_final: 7}
+    ]
+  },
+  {
+    registration_number: 22,
+    first_name: 'Hedwiga',
+    last_name: 'Bennike',
+    birth_date: ISODate("1984-09-17 15:43:30"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 3, grade_2: 6, grade_3: 1, grade_final: 3}
+    ]
+  },
+  {
+    registration_number: 23,
+    first_name: 'Patrice',
+    last_name: 'Playfoot',
+    birth_date: ISODate("1996-10-04 03:54:23"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 2, grade_2: 4, grade_3: 6, grade_final: 5}
+    ]
+  },
+  {
+    registration_number: 24,
+    first_name: 'Ramon',
+    last_name: 'Buckberry',
+    birth_date: ISODate("1986-01-27 05:05:40"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 2, grade_2: 9, grade_3: 6, grade_final: 9}
+    ]
+  },
+  {
+    registration_number: 25,
+    first_name: 'Keene',
+    last_name: 'Caunce',
+    birth_date: ISODate("1988-11-09 14:42:06"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 8, grade_2: 3, grade_3: 6, grade_final: 2}
+    ]
+  },
+  {
+    registration_number: 26,
+    first_name: 'Eulalie',
+    last_name: 'Hillhouse',
+    birth_date: ISODate("1988-07-07 20:39:35"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 6, grade_2: 7, grade_3: 8, grade_final: 1}
+    ]
+  },
+  {
+    registration_number: 27,
+    first_name: 'Dorena',
+    last_name: 'Carlesi',
+    birth_date: ISODate("1990-11-06 16:10:16"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 9, grade_2: 10, grade_3: 1, grade_final: 3}
+    ]
+  },
+  {
+    registration_number: 28,
+    first_name: 'Hakeem',
+    last_name: 'Flewan',
+    birth_date: ISODate("1992-08-22 01:21:15"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 2, grade_2: 8, grade_3: 4, grade_final: 9}
+    ]
+  },
+  {
+    registration_number: 29,
+    first_name: 'Nerta',
+    last_name: 'Peevor',
+    birth_date: ISODate("1997-11-29 15:50:55"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 2, grade_2: 8, grade_3: 6, grade_final: 6}
+    ]
+  },
+  {
+    registration_number: 30,
+    first_name: 'Adora',
+    last_name: 'Knutton',
+    birth_date: ISODate("1983-07-09 11:33:59"),
+    assist:
+    [
+      {course_id: 3, year: 2018, grade_1: 2, grade_2: 10, grade_3: 9, grade_final: 5}
+    ]
+  }
+])
+
