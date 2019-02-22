@@ -5,12 +5,10 @@ import java.util.List;
 
 public interface ProductService {
 
-  Product getProduct(long id);
+  Product getProductById(Long id);
   List<Product> getAllProducts();
-  List<Product> getProductsByCategory(String category);
-  Product newProduct(Product p);
-  Product replaceProduct(Product p);
-  void deleteProduct(Product p);
-  void deleteProductById(long id);
+  Product createProduct(Product product);
+  Product replaceProduct(Product product);
+  boolean deleteProductById(Long id);
 
 }

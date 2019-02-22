@@ -1,102 +1,127 @@
 package com.leo.bootcampglobant.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.leo.bootcampglobant.exceptions.ProductNotFoundException;
 import com.leo.bootcampglobant.models.Product;
 import com.leo.bootcampglobant.repositories.ProductRepository;
-import com.leo.bootcampglobant.repositories.RepositoryInMemory;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.AdditionalAnswers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class ProductServiceImplTest {
 
-  private class FakeProductRepository
-      extends RepositoryInMemory<Product>
-      implements ProductRepository {
-
-  }
-
-  private static final Product[] testProducts = {
-      new Product( "Smart TV 42'", "Electronics", new BigDecimal("149.99")),
-      new Product("Soda Cola 3L", "Grocery", new BigDecimal("14.49")),
-      new Product("New Phone X", "Electronics", new BigDecimal("459.99")),
-      new Product("Bread 1Kg", "Grocery", new BigDecimal("1.99")),
-      new Product("Generic Rap Songs", "Music", new BigDecimal("11.49"))
-  };
-
+  @InjectMocks
   private ProductServiceImpl productService;
+  @Mock
+  private ProductRepository mockedProductRepository;
+
+  private static final List<Product> testProducts = Arrays.asList(
+      new Product(1L, "Test product 1", new BigDecimal("399.99")),
+      new Product(2L, "Test product 2", new BigDecimal("249.99")),
+      new Product(3L, "Test product 3", new BigDecimal("175.00"))
+  );
+
 
   @Before
   public void initialize() {
-    FakeProductRepository productRepository = new FakeProductRepository();
+    MockitoAnnotations.initMocks(this);
+  }
 
-    for (int i = 0; i < testProducts.length; ++i) {
-      testProducts[i] = productRepository.create(testProducts[i]);
+  @Test
+  public void getProductById_correctRetrieve() {
+    when(mockedProductRepository.findById(anyLong())).thenReturn(Optional.of(testProducts.get(0)));
+
+    assertSame(testProducts.get(0), productService.getProductById(1L));
+    verify(mockedProductRepository).findById(1L);
+  }
+
+  @Test(expected = ProductNotFoundException.class)
+  public void getProductById_productNotFound() {
+    when(mockedProductRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+    try {
+      productService.getProductById(1L);
+    } finally {
+      verify(mockedProductRepository).findById(1L);
     }
-
-    productService = new ProductServiceImpl(productRepository);
   }
 
   @Test
-  public void getProduct_exist() {
-    assertEquals(testProducts[0], productService.getProduct(testProducts[0].getId()));
-  }
+  public void getAllProducts_correctRetrieve() {
+    when(mockedProductRepository.findAll()).thenReturn(testProducts);
 
-  @Test(expected = NoSuchElementException.class)
-  public void getProduct_nonExisting() {
-    // With 5 insertions, no id can be 42.
-    productService.getProduct(42);
+    assertEquals(testProducts, productService.getAllProducts());
+    verify(mockedProductRepository).findAll();
   }
 
   @Test
-  public void getAllProducts_correct() {
-    assertEquals(Arrays.asList(testProducts), productService.getAllProducts());
+  public void getAllProducts_empty() {
+    when(mockedProductRepository.findAll()).thenReturn(Collections.emptyList());
+
+    assertEquals(Collections.emptyList(), productService.getAllProducts());
+    verify(mockedProductRepository).findAll();
   }
 
   @Test
-  public void getProductsByCategory_existingCategory() {
-    assertEquals(Arrays.asList(testProducts[0], testProducts[2]),
-        productService.getProductsByCategory("Electronics"));
-  }
+  public void createProduct_correctInsert() {
+    when(mockedProductRepository.save(any())).then(AdditionalAnswers.returnsFirstArg());
 
-
-  @Test
-  public void getProductsByCategory_nonExistingCategory() {
-    assertEquals(Collections.emptyList(), productService.getProductsByCategory("Gaming"));
+    assertSame(testProducts.get(0), productService.createProduct(testProducts.get(0)));
+    verify(mockedProductRepository).save(testProducts.get(0));
   }
 
   @Test
-  public void newProduct_insertion() {
-    Product newProduct = new Product("Game Station X", "Gaming", new BigDecimal("349.99"));
-    newProduct = productService.newProduct(newProduct);
-    assertEquals(newProduct, productService.getProduct(newProduct.getId()));
+  public void replaceProduct_correctUpdate() {
+    Product updatedProduct = new Product(1L, "First test product", new BigDecimal("2.99"));
+
+    when(mockedProductRepository.findById(1L)).thenReturn(Optional.of(testProducts.get(0)));
+    when(mockedProductRepository.save(any())).then(AdditionalAnswers.returnsFirstArg());
+
+    assertEquals(updatedProduct, productService.replaceProduct(updatedProduct));
+    verify(mockedProductRepository).save(updatedProduct);
+  }
+
+  @Test(expected = ProductNotFoundException.class)
+  public void replaceProduct_productNotFound() {
+    Product updatedProduct = new Product(1L, "First test product", new BigDecimal("2.99"));
+
+    when(mockedProductRepository.findById(1L)).thenReturn(Optional.empty());
+
+    try {
+      productService.replaceProduct(updatedProduct);
+    } finally {
+      verify(mockedProductRepository, never()).save(any());
+    }
   }
 
   @Test
-  public void replaceProduct_modify() {
-    Product modifiedProduct = new Product(
-        testProducts[0].getId(), "LED TV 30'",
-        "Television", new BigDecimal("74.99")
-    );
-
-    productService.replaceProduct(modifiedProduct);
-    assertEquals(modifiedProduct, productService.getProduct(modifiedProduct.getId()));
+  public void deleteProductById_correctDeletion() {
+    assertTrue(productService.deleteProductById(1L));
+    verify(mockedProductRepository).deleteById(1L);
   }
 
-  @Test(expected = NoSuchElementException.class)
-  public void deleteProduct_objectDeletion() {
-    productService.deleteProduct(testProducts[0]);
-    productService.getProduct(testProducts[0].getId());
+  @Test
+  public void deleteProductById_productNotFound() {
+    doThrow(RuntimeException.class).when(mockedProductRepository).deleteById(any());
+    assertFalse(productService.deleteProductById(1L));
+    verify(mockedProductRepository).deleteById(1L);
   }
-
-  @Test(expected = NoSuchElementException.class)
-  public void deleteProductById_idDeletion() {
-    productService.deleteProductById(testProducts[0].getId());
-    productService.getProduct(testProducts[0].getId());
-  }
-
 }

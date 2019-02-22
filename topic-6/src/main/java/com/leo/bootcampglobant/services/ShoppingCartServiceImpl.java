@@ -1,103 +1,128 @@
 package com.leo.bootcampglobant.services;
 
+import com.leo.bootcampglobant.exceptions.EmptyCartException;
+import com.leo.bootcampglobant.exceptions.OrderLineNotFoundException;
+import com.leo.bootcampglobant.exceptions.ProductAlreadyInCartException;
+import com.leo.bootcampglobant.exceptions.UserNotFoundException;
 import com.leo.bootcampglobant.models.Order;
 import com.leo.bootcampglobant.models.OrderLine;
 import com.leo.bootcampglobant.models.Product;
+import com.leo.bootcampglobant.models.ShoppingCart;
 import com.leo.bootcampglobant.repositories.OrderLineRepository;
-import com.leo.bootcampglobant.repositories.OrderLineRepositoryInMemory;
-import com.leo.bootcampglobant.repositories.OrderRepository;
-import com.leo.bootcampglobant.repositories.OrderRepositoryInMemory;
-import com.leo.bootcampglobant.repositories.ProductRepository;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import com.leo.bootcampglobant.repositories.ShoppingCartRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-  private OrderLineRepository orderLineRepository;
-  private OrderRepository orderRepository;
-  private ProductService productRepository;
+  private final ShoppingCartRepository shoppingCartRepository;
+  private final OrderLineRepository orderLineRepository;
+  private final ProductService productService;
+  private final UserService userService;
 
-  public ShoppingCartServiceImpl(OrderLineRepository orderLineRepository,
-      OrderRepository orderRepository,
-      ProductService productRepository) {
+  @Autowired
+  public ShoppingCartServiceImpl(
+      ShoppingCartRepository shoppingCartRepository,
+      OrderLineRepository orderLineRepository,
+      ProductService productService, UserService userService) {
 
+    this.shoppingCartRepository = shoppingCartRepository;
     this.orderLineRepository = orderLineRepository;
-    this.orderRepository = orderRepository;
-    this.productRepository = productRepository;
-  }
-
-  public ShoppingCartServiceImpl(ProductService productRepository) {
-    this(new OrderLineRepositoryInMemory(),
-         new OrderRepositoryInMemory(),
-         productRepository);
-  }
-
-  public ShoppingCartServiceImpl() {
-    this(new ProductServiceImpl());
+    this.productService = productService;
+    this.userService = userService;
   }
 
   @Override
-  public Order getCurrentCart() {
-    return new Order(orderLineRepository.readAll(), LocalDateTime.now());
+  public ShoppingCart getShopingCartByUserId(Long userId) {
+    return shoppingCartRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException("id of " + userId));
   }
 
   @Override
-  public List<Order> getOrders() {
-    return orderRepository.readAll();
+  public OrderLine getOrderLineById(Long userId, Long orderLineId) {
+    return getShopingCartByUserId(userId).getCurrentItems().stream()
+        .filter(e -> e.getId().equals(orderLineId)).findFirst()
+        .orElseThrow(() -> new OrderLineNotFoundException("id of " + orderLineId));
   }
 
   @Override
-  public OrderLine getOrderLine(long id) {
-    return orderLineRepository.readByKey(id).get();
+  public OrderLine getOrderLineByProductId(Long userId, Long productId) {
+    return getShopingCartByUserId(userId).getCurrentItems().stream()
+        .filter(e -> e.getProduct().getId().equals(productId)).findFirst()
+        .orElseThrow(() -> new OrderLineNotFoundException("product with id of " + productId));
   }
 
   @Override
-  public OrderLine addToCart(Product product, int quantity) {
-    if (productRepository.getProduct(product.getId()) == null) {
-        throw new RuntimeException("The product " + product + " doesn't exist.");
+  public OrderLine addToCart(Long userId, Long productId, int quantity) {
+    Product product = productService.getProductById(productId);
+    ShoppingCart shoppingCart = getShopingCartByUserId(userId);
+
+    try {
+      this.getOrderLineByProductId(userId, productId);
+    } catch (OrderLineNotFoundException e) {
+      OrderLine orderLine = orderLineRepository
+          .save(new OrderLine(product, quantity));
+      shoppingCart.getCurrentItems().add(orderLine);
+      shoppingCartRepository.save(shoppingCart);
+      return orderLine;
     }
+    // The product is already in the cart
+    throw new ProductAlreadyInCartException(productId);
+  }
 
-    OrderLine orderLine = new OrderLine(product, quantity);
-    int index = orderLineRepository.readAll().indexOf(product);
-
-    if (index < 0) {
-      // doesnt exist
-      orderLine = orderLineRepository.create(orderLine);
-    } else {
-      orderLine = orderLineRepository.readAll().get(index);
-      orderLine = new OrderLine(orderLine.getId(), product,
-          orderLine.getQuantity() + quantity);
-      orderLineRepository.update(orderLine);
+  @Override
+  public boolean deleteFromCartByOrderLineId(Long userId, Long orderLineId) {
+    ShoppingCart shoppingCart = getShopingCartByUserId(userId);
+    boolean removed = shoppingCart.getCurrentItems().
+        removeIf(e -> e.getId().equals(orderLineId));
+    if (removed) {
+      shoppingCartRepository.save(shoppingCart);
+      orderLineRepository.deleteById(orderLineId);
     }
-    return orderLine;
+    return removed;
   }
 
   @Override
-  public void removeFromCart(long id) {
-    orderLineRepository.deleteByKey(id);
+  public boolean deleteFromCartByProductId(Long userId, Long productId) {
+    ShoppingCart shoppingCart = getShopingCartByUserId(userId);
+    OrderLine removed = shoppingCart.getCurrentItems().stream()
+        .filter(e -> e.getProduct().getId().equals(productId)).findFirst().orElse(null);
+    if (removed == null) {
+      return false;
+    }
+    shoppingCart.getCurrentItems().remove(removed);
+    shoppingCartRepository.save(shoppingCart);
+    orderLineRepository.delete(removed);
+    return true;
   }
 
   @Override
-  public void removeFromCartByProductId(long id) {
-    Optional<OrderLine> result = orderLineRepository.readAll().stream().
-        filter(e -> e.getProduct().getId() == id).findFirst();
+  public void clear(Long userId) {
+    clear(userId, true);
+  }
 
-    result.ifPresent(orderLine -> orderLineRepository.delete(orderLine));
+  private void clear(Long userId, boolean removeChild) {
+    clear(getShopingCartByUserId(userId), removeChild);
+  }
+
+  private void clear(ShoppingCart shoppingCart, boolean removeChild) {
+    if (removeChild) {
+      orderLineRepository.deleteAll(shoppingCart.getCurrentItems());
+    }
+    shoppingCart.getCurrentItems().clear();
+    shoppingCartRepository.save(shoppingCart);
   }
 
   @Override
-  public void clear() {
-    orderLineRepository.clear();
-  }
+  public Order checkOut(Long userId) {
+    ShoppingCart shoppingCart = getShopingCartByUserId(userId);
 
-  @Override
-  public Order checkOut() {
-    Order newOrder = new Order(orderLineRepository.readAll(), LocalDateTime.now());
-    orderRepository.create(newOrder);
-    clear();
-    return newOrder;
+    if (shoppingCart.getCurrentItems().isEmpty()) {
+      throw new EmptyCartException();
+    }
+    Order order = userService.createOrder(userId, shoppingCart.produceOrder());
+    clear(shoppingCart, false);
+    return order;
   }
 }

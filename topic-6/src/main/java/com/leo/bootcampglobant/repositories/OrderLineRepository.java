@@ -1,8 +1,8 @@
 package com.leo.bootcampglobant.repositories;
 
 import com.leo.bootcampglobant.models.OrderLine;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderLineRepository extends Repository<OrderLine, Long> {
-  void clear();
+public interface OrderLineRepository extends JpaRepository<OrderLine, Long> {
+
 }

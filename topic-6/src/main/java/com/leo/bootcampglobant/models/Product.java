@@ -2,41 +2,41 @@ package com.leo.bootcampglobant.models;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.Positive;
 
-/**
- * Class representing product information.
- */
-public class Product implements WithId{
+@Entity
+public class Product {
 
-  private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
   private String name;
-  private String category;
+  @Positive
   private BigDecimal price;
 
-  public Product(long id, String name, String category, BigDecimal price) {
+  public Product(Long id, String name, BigDecimal price) {
     this.id = id;
     this.name = name;
-    this.category = category;
     this.price = price;
   }
 
-  public Product(String name, String category, BigDecimal price) {
+  public Product(String name, BigDecimal price) {
     this.name = name;
-    this.category = category;
     this.price = price;
   }
 
   public Product() {
-
   }
 
-  @Override
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  @Override
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -44,12 +44,16 @@ public class Product implements WithId{
     return name;
   }
 
-  public String getCategory() {
-    return category;
+  public void setName(String name) {
+    this.name = name;
   }
 
   public BigDecimal getPrice() {
     return price;
+  }
+
+  public void setPrice(BigDecimal price) {
+    this.price = price;
   }
 
   @Override
@@ -61,15 +65,14 @@ public class Product implements WithId{
       return false;
     }
     Product product = (Product) o;
-    return id == product.id &&
+    return Objects.equals(id, product.id) &&
         Objects.equals(name, product.name) &&
-        Objects.equals(category, product.category) &&
         Objects.equals(price, product.price);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, category, price);
+    return Objects.hash(id, name, price);
   }
 
   @Override
@@ -77,8 +80,8 @@ public class Product implements WithId{
     return "Product{" +
         "id=" + id +
         ", name='" + name + '\'' +
-        ", category='" + category + '\'' +
         ", price=" + price +
         '}';
   }
+
 }

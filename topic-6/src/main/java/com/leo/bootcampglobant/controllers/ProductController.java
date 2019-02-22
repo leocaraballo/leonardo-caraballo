@@ -24,22 +24,6 @@ public class ProductController {
 
   @Autowired
   public ProductController(ProductService productService) {
-    productService.newProduct(
-        new Product("Smart TV 42'", "Electronics", new BigDecimal("149.99"))
-    );
-    productService.newProduct(
-        new Product("Soda Cola 3L", "Grocery", new BigDecimal("14.49"))
-    );
-    productService.newProduct(
-        new Product("New Phone X", "Electronics", new BigDecimal("449.99"))
-    );
-    productService.newProduct(
-        new Product("Bread 1Kg", "Grocery", new BigDecimal("1.99"))
-    );
-    productService.newProduct(
-        new Product("Generic Rap Songs", "Music", new BigDecimal("11.49"))
-    );
-
     this.productService = productService;
   }
 
@@ -49,23 +33,24 @@ public class ProductController {
   }
 
   @GetMapping("/{id}")
-  public Product getProduct(@PathVariable long id) {
-    return productService.getProduct(id);
+  public Product getProductById(@PathVariable Long id) {
+    return productService.getProductById(id);
   }
 
   @PostMapping
-  public Product newProduct(@RequestBody Product product) {
-    return productService.newProduct(product);
+  public Product createProduct(@RequestBody Product product) {
+    return productService.createProduct(product);
   }
 
   @PutMapping("/{id}")
-  public Product replaceProduct(@RequestBody Product product, @PathVariable long id) {
+  public Product replaceProduct(@RequestBody Product product, @PathVariable Long id) {
     product.setId(id);
     return productService.replaceProduct(product);
   }
 
   @DeleteMapping("/{id}")
-  public void deleteProduct(@PathVariable long id) {
-    productService.deleteProductById(id);
+  public boolean deleteProductById(@PathVariable Long id) {
+    return productService.deleteProductById(id);
   }
 }
+

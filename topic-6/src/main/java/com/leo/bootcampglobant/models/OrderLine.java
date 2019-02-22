@@ -1,16 +1,28 @@
 package com.leo.bootcampglobant.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-public class OrderLine implements WithId {
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Entity
+public class OrderLine {
 
-  private long id;
-  private final Product product;
-  private final int quantity;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "product_id", nullable = false)
+  private Product product;
+  private int quantity;
 
-  public OrderLine(long id, Product product, int quantity) {
+  public OrderLine(Long id, Product product, int quantity) {
     this.id = id;
     this.product = product;
     this.quantity = quantity;
@@ -21,13 +33,15 @@ public class OrderLine implements WithId {
     this.quantity = quantity;
   }
 
-  @Override
-  public long getId() {
+  public OrderLine() {
+
+  }
+
+  public Long getId() {
     return id;
   }
 
-  @Override
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -35,8 +49,16 @@ public class OrderLine implements WithId {
     return product;
   }
 
+  public void setProduct(Product product) {
+    this.product = product;
+  }
+
   public int getQuantity() {
     return quantity;
+  }
+
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
   }
 
   public BigDecimal getCost() {
@@ -52,12 +74,14 @@ public class OrderLine implements WithId {
       return false;
     }
     OrderLine orderLine = (OrderLine) o;
-    return Objects.equals(product, orderLine.product);
+    return quantity == orderLine.quantity &&
+        Objects.equals(id, orderLine.id) &&
+        Objects.equals(product, orderLine.product);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(product);
+    return Objects.hash(id, product, quantity);
   }
 
   @Override
@@ -68,4 +92,5 @@ public class OrderLine implements WithId {
         ", quantity=" + quantity +
         '}';
   }
+
 }
