@@ -1,0 +1,793 @@
+openapi: 3.0.0
+info:
+  title: Shopping Cart
+  description: |
+    This is a Shopping Cart API REST
+  contact:
+    email: leonardoicaraballo@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://virtserver.swaggerhub.com/leocaraballo/ShoppingCart/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: http://localhost:8080/api
+  description: API Entry Point Prefix
+tags:
+- name: products
+  description: CRUD operations for the products
+  externalDocs:
+    description: Find out more
+    url: http://localhost:8080/api/products
+- name: users
+  description: Operations about user
+  externalDocs:
+    description: Find out more
+    url: http://localhost:8080/api/users
+- name: shoppingcart
+  description: Operations about the Shopping Cart
+  externalDocs:
+    description: Find out more
+    url: http://localhost:8080/api/shoppingcart
+paths:
+  /products:
+    get:
+      tags:
+      - products
+      summary: Find all the Products in the store
+      description: Returns all the products in the store
+      operationId: getAllProducts
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                - id: 1
+                  name: Smart TV 42'
+                  price: 149.99
+                - id: 2
+                  name: Soda Cola 3L
+                  price: 14.99
+                - id: 3
+                  name: New Phone X
+                  price: 449.99
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      tags:
+      - products
+      summary: Create a new Product
+      operationId: createProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+            example:
+              name: Smart TV 42'
+              price: 149.99
+      responses:
+        200:
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              example:
+                id: 1
+                name: Smart TV 42'
+                price: 149.99
+  /products/{productId}:
+    get:
+      tags:
+      - products
+      summary: Finds Product by id.
+      operationId: getProductById
+      parameters:
+      - name: productId
+        in: path
+        description: Id of the Product to be searched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              example:
+                id: 1
+                name: Smart TV 42'
+                price: 149.99
+        404:
+          description: Product Not Found
+    put:
+      tags:
+      - products
+      summary: Updates a Product
+      operationId: replaceProduct
+      parameters:
+      - name: productId
+        in: path
+        description: Id of the Product to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Updated Product object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+            example:
+              name: Smart TV 42'
+              price: 149.99
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              example:
+                id: 1
+                name: Super LED TV 32'
+                price: 79.5
+        404:
+          description: Product Not Found
+    delete:
+      tags:
+      - products
+      summary: Deletes a Product
+      operationId: deleteProductById
+      parameters:
+      - name: productId
+        in: path
+        description: Id of the Product to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: boolean
+        404:
+          description: Product Not Found
+  /users:
+    get:
+      tags:
+      - users
+      summary: Find all the Users
+      description: Returns all the Users
+      operationId: getAllUsers
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                - id: 1
+                  orders: []
+                  firstName: Eamon
+                  lastName: Andrew
+                  username: eamondrew
+                  password: password
+                - id: 2
+                  orders: []
+                  firstName: Celine
+                  lastName: Monaghan
+                  username: celinee
+                  password: asdf1234
+                - id: 3
+                  orders: []
+                  firstName: Ivor
+                  lastName: Andrew
+                  username: theandrews
+                  password: random64
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+      - users
+      summary: Create a new User
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              firstName: Eamon
+              lastName: Andrew
+              username: eamondrew
+              password: password
+      responses:
+        200:
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: 1
+                orders: []
+                firstName: Eamon
+                lastName: Andrew
+                username: eamondrew
+                password: password
+        400:
+          description: Bad Request, the username should only contain alphabetical characters.
+        409:
+          description: Conflict, the username entered is already in use.
+  /api/users:
+    get:
+      tags:
+      - users
+      summary: Finds User by their First or Last Name.
+      description: GET operations on /users differentiated by their query params.
+      operationId: getUserByName
+      parameters:
+      - name: lastName
+        in: query
+        description: Last Name of the User to be searched
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: firstName
+        in: query
+        description: First Name of the User to be searched
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: 1
+                orders: []
+                firstName: Eamon
+                lastName: Andrew
+                username: eamondrew
+                password: password
+        404:
+          description: User Not Found
+  /users/{username}:
+    get:
+      tags:
+      - users
+      summary: Finds User by their username.
+      operationId: getUserByUsername
+      parameters:
+      - name: username
+        in: path
+        description: Username of the User to be searched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: 1
+                orders: []
+                firstName: Eamon
+                lastName: Andrew
+                username: eamondrew
+                password: password
+        404:
+          description: User Not Found
+  /users/{userId}:
+    get:
+      tags:
+      - users
+      summary: Finds User by their Id.
+      operationId: getUserById
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to be searched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: 1
+                orders: []
+                firstName: Eamon
+                lastName: Andrew
+                username: eamondrew
+                password: password
+        404:
+          description: User Not Found
+    put:
+      tags:
+      - users
+      summary: Updates a User
+      operationId: replaceUser
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Updated User object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              firstName: Marty
+              lastName: McFly
+              password: back3
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: 1
+                orders: []
+                firstName: Marty
+                lastName: McFly
+                username: eamondrew
+                password: back3
+        400:
+          description: Bad Request, cannot change the username of a User.
+        404:
+          description: User Not Found
+    delete:
+      tags:
+      - users
+      summary: Deletes a User
+      operationId: deleteUserById
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: boolean
+        404:
+          description: User Not Found
+  /shoppingcart/{userId}:
+    get:
+      tags:
+      - shoppingcart
+      summary: Finds ShoppingCart by their User Id.
+      operationId: getShoppingCartByUserId
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to search their Shopping Cart
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingCart'
+              example:
+                id: 1
+                currentItems: []
+                user:
+                  id: 1
+                  orders: []
+                  firstName: Marty
+                  lastName: McFly
+                  username: eamondrew
+                  password: back3
+        404:
+          description: User Not Found
+    post:
+      tags:
+      - shoppingcart
+      summary: Add a OrderLine to the ShoppingCart, with a Product Id and quantity.
+      operationId: addToCart
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to search their Shopping Cart
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: productId
+        in: query
+        description: Id of the Product to be added to the Cart
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: quantity
+        in: query
+        description: Quantity of Product to be added
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderLine'
+              example:
+                id: 1
+                product:
+                  id: 1
+                  name: Smart TV 42'
+                  price: 149.99
+                quantity: 3
+        404:
+          description: User Not found or Product Not Found
+        409:
+          description: Conflict, the product is already in the ShoppingCart
+    delete:
+      tags:
+      - shoppingcart
+      summary: Deletes a OrderLine from a ShoppingCart
+      operationId: deleteFromCart
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to search their Shopping Cart
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: orderLineId
+        in: query
+        description: Id of the OrderLine to be deleted
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: productId
+        in: query
+        description: Id of the Product contained in the OrderLine to be deleted
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: boolean
+        404:
+          description: User Not Found
+  /api/shoppingcart/{userId}:
+    get:
+      tags:
+      - shoppingcart
+      summary: Finds OrderLine of a specific ShoppingCart
+      operationId: getOrderLine
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to search their Shopping Cart
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: orderLineId
+        in: query
+        description: Id of the OrderLine to be searched.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: productId
+        in: query
+        description: Id of the Product that the OrderLine to be searched contains.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderLine'
+              example:
+                id: 1
+                product:
+                  id: 1
+                  name: Smart TV 42'
+                  price: 149.99
+                quantity: 3
+        404:
+          description: User Not Found or OrderLine Not Found
+  /shoppingcart/{userId}/clear:
+    delete:
+      tags:
+      - shoppingcart
+      summary: Deletes all the OrderLine from a ShoppingCart
+      operationId: clear
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to clear their Shopping Cart
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: User Not Found
+  /shoppingcart/{userId}/checkout:
+    post:
+      tags:
+      - shoppingcart
+      summary: Creates an Order with the cart contents and then clears the ShoppingCart
+      operationId: checkout
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to check out their Shopping Cart
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+              example:
+                id: 1
+                items:
+                - id: 1
+                  product:
+                    id: 1
+                    name: Smart TV 42'
+                    price: 149.99
+                  quantity: 3
+                - id: 2
+                  product:
+                    id: 2
+                    name: New Phone X
+                    price: 450
+                  quantity: 1
+                timestamp: 2019-02-20T15:00:02.0548
+        400:
+          description: Bad request, can't check out a empty cart
+        404:
+          description: User Not Found
+  /shoppingcart/{userId}/orders:
+    get:
+      tags:
+      - shoppingcart
+      summary: Finds the Orders of a User
+      operationId: getUserOrders
+      parameters:
+      - name: userId
+        in: path
+        description: Id of the User to search their Shopping Cart
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: orderId
+        in: query
+        description: Id of the Order to search for
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/Order'
+                - $ref: '#/components/schemas/Order'
+              example:
+              - id: 1
+                items:
+                - id: 1
+                  product:
+                    id: 1
+                    name: Smart TV 42'
+                    price: 149.99
+                  quantity: 3
+                - id: 2
+                  product:
+                    id: 2
+                    name: New Phone X
+                    price: 450
+                  quantity: 1
+                timestamp: 2019-02-20T15:00:02.0548
+              - id: 2
+                items:
+                - id: 1
+                  product:
+                    id: 1
+                    name: LED TV 32'
+                    price: 49
+                  quantity: 1
+                timestamp: 2019-02-20T15:00:02.0548
+        404:
+          description: User Not Found
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        price:
+          type: number
+      xml:
+        name: Product
+    OrderLine:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        product:
+          $ref: '#/components/schemas/Product'
+        quantity:
+          type: integer
+          format: int32
+      xml:
+        name: OrderLine
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderLine'
+        timestamp:
+          type: string
+          format: date-time
+      xml:
+        name: Order
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+      xml:
+        name: User
+    ShoppingCart:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        currentItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderLine'
+        user:
+          $ref: '#/components/schemas/User'
+      xml:
+        name: ShoppingCart

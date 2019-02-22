@@ -33,21 +33,9 @@ public class UserController {
     return userService.getAllUsers();
   }
 
-  @GetMapping("/{id:[0-9]+}")
-  public User getUserById(@PathVariable Long id) {
-    return userService.getUserById(id);
-  }
-
-  @GetMapping("/{username:[a-zA-Z]+}")
-  public User getUserByUsername(@PathVariable String username) {
-    return userService.getUserByUsername(username);
-  }
-
-  @GetMapping(params = "firstName")
-  public List<User> getUsersByFirstName(
-      @RequestParam(value = "firstName") String firstName) {
-
-    return userService.getUserByFirstName(firstName);
+  @PostMapping
+  public User createUser(@RequestBody User user) {
+    return userService.createUser(user);
   }
 
   @GetMapping(params = "lastName")
@@ -57,9 +45,21 @@ public class UserController {
     return userService.getUserByLastName(lastName);
   }
 
-  @PostMapping
-  public User createUser(@RequestBody User user) {
-    return userService.createUser(user);
+  @GetMapping(params = "firstName")
+  public List<User> getUsersByFirstName(
+      @RequestParam(value = "firstName") String firstName) {
+
+    return userService.getUserByFirstName(firstName);
+  }
+
+  @GetMapping("/{username:[a-zA-Z]+}")
+  public User getUserByUsername(@PathVariable String username) {
+    return userService.getUserByUsername(username);
+  }
+
+  @GetMapping("/{id:[0-9]+}")
+  public User getUserById(@PathVariable Long id) {
+    return userService.getUserById(id);
   }
 
   @PutMapping("/{id}")
@@ -72,5 +72,6 @@ public class UserController {
   public boolean deleteUser(@PathVariable Long id) {
     return userService.deleteUserById(id);
   }
+
 
 }
