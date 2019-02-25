@@ -1,6 +1,5 @@
 package com.leo.bootcampglobant.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,11 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -25,7 +22,7 @@ public class Order {
   private Long id;
   @OneToMany
   @JoinColumn(name = "orderline_id")
-  private List<OrderLine> items;
+  private List<OrderLine> items = new ArrayList<>();
   private LocalDateTime timestamp;
 
   public Order(Long id, List<OrderLine> items, LocalDateTime timestamp) {

@@ -1,6 +1,5 @@
 package com.leo.bootcampglobant.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -10,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 public class OrderLine {
 

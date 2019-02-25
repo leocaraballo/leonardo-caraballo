@@ -25,7 +25,6 @@ public class ShoppingCartController {
 
   private final OrderService orderService;
 
-  @Autowired
   public ShoppingCartController(ShoppingCartService shoppingCartService,
       OrderService orderService) {
 
