@@ -2,7 +2,7 @@ package com.leo.bootcampglobant.finalshoppingcart.services;
 
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.CannotChangeUserException;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.PropertyValidationException;
-import com.leo.bootcampglobant.finalshoppingcart.exceptions.UserAlreadyCreatedException;
+import com.leo.bootcampglobant.finalshoppingcart.exceptions.AlreadyCreatedException;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.UserNotFoundException;
 import com.leo.bootcampglobant.finalshoppingcart.models.Order;
 import com.leo.bootcampglobant.finalshoppingcart.models.ShoppingCart;
@@ -11,6 +11,7 @@ import com.leo.bootcampglobant.finalshoppingcart.repositories.OrderLineRepositor
 import com.leo.bootcampglobant.finalshoppingcart.repositories.OrderRepository;
 import com.leo.bootcampglobant.finalshoppingcart.repositories.ShoppingCartRepository;
 import com.leo.bootcampglobant.finalshoppingcart.repositories.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import javax.validation.ConstraintViolationException;
 import org.springframework.stereotype.Service;
@@ -67,11 +68,15 @@ public class UserServiceImpl implements UserService {
       user = userRepository.save(user);
       return user;
     } catch (ConstraintViolationException e) {
-      throw new PropertyValidationException(
-          "The username MUST ONLY CONTAIN alphabetic characters (a-zA-Z).");
+      var validationInfo = new ArrayList<>(e.getConstraintViolations())
+          .get(0);
+      String field = validationInfo.getPropertyPath().toString();
+      String message = "username".equals(field)
+          ? "MUST ONLY CONTAIN alphabetic characters (a-zA-Z)."
+          : validationInfo.getMessage();
+      throw new PropertyValidationException(field, message);
     } catch (Exception e) {
-      e.printStackTrace();
-      throw new UserAlreadyCreatedException(user.getUsername());
+      throw new AlreadyCreatedException("User", "username", user.getUsername());
     }
   }
 

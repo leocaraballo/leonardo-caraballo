@@ -1,5 +1,6 @@
 package com.leo.bootcampglobant.finalshoppingcart.config;
 
+import com.leo.bootcampglobant.finalshoppingcart.models.Category;
 import com.leo.bootcampglobant.finalshoppingcart.models.Product;
 import com.leo.bootcampglobant.finalshoppingcart.models.User;
 import com.leo.bootcampglobant.finalshoppingcart.services.ProductService;
@@ -31,20 +32,31 @@ public class FillDataOnStart implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
+    productService.createCategory(new Category("Commons", "Default Category for all the items"));
+    productService
+        .createCategory(new Category("Electronics", "Home appliances or digital devices"));
+    productService.createCategory(new Category("Groceries", "Foods and drinks"));
+    productService.createCategory(new Category("Music", "Everything related to music"));
+
     productService.createProduct(
-        new Product("Smart TV 42'", new BigDecimal("149.99"))
+        new Product("Smart TV 42'", new BigDecimal("149.99")),
+        2L
     );
     productService.createProduct(
-        new Product("Soda Cola 3L", new BigDecimal("14.49"))
+        new Product("Soda Cola 3L", new BigDecimal("14.49")),
+        3L
     );
     productService.createProduct(
-        new Product("New Phone X", new BigDecimal("449.99"))
+        new Product("New Phone X", new BigDecimal("449.99")),
+        2L
     );
     productService.createProduct(
-        new Product("Bread 1Kg", new BigDecimal("1.99"))
+        new Product("Bread 1Kg", new BigDecimal("1.99")),
+        3L
     );
     productService.createProduct(
-        new Product("Generic Rap Songs", new BigDecimal("11.49"))
+        new Product("Generic Rap Songs", new BigDecimal("11.49")),
+        4L
     );
 
     userService.createUser(

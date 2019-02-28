@@ -1,5 +1,6 @@
 package com.leo.bootcampglobant.finalshoppingcart.controllers;
 
+import com.leo.bootcampglobant.finalshoppingcart.models.Category;
 import com.leo.bootcampglobant.finalshoppingcart.models.Product;
 import com.leo.bootcampglobant.finalshoppingcart.services.ProductService;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,9 +31,20 @@ public class ProductController {
     return productService.getAllProducts();
   }
 
-  @PostMapping
-  public Product createProduct(@RequestBody Product product) {
-    return productService.createProduct(product);
+  @GetMapping("/categories")
+  public List<Category> getAllCategories() {
+    return productService.getAllCategories();
+  }
+
+  @PostMapping("/categories")
+  public Category createCategory(@RequestBody Category category) {
+    return productService.createCategory(category);
+  }
+
+  @PostMapping(params = "categoryId")
+  public Product createProduct(@RequestBody Product product,
+      @RequestParam(name = "categoryId") Long categoryId) {
+    return productService.createProduct(product, categoryId);
   }
 
   @GetMapping("/{productId}")
@@ -44,6 +57,13 @@ public class ProductController {
   public Product replaceProduct(@RequestBody Product product, @PathVariable Long productId) {
     product.setId(productId);
     return productService.replaceProduct(product);
+  }
+
+  @PutMapping(value = "/{productId}/category", params = "categoryId")
+  public Product replaceCategory(@PathVariable Long productId,
+      @RequestParam(name = "categoryId") Long categoryId) {
+
+    return productService.replaceCategory(productId, categoryId);
   }
 
   @DeleteMapping("/{productId}")
