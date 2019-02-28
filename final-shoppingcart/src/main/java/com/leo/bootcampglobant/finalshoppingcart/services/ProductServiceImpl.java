@@ -7,10 +7,10 @@ import com.leo.bootcampglobant.finalshoppingcart.exceptions.PropertyValidationEx
 import com.leo.bootcampglobant.finalshoppingcart.models.Category;
 import com.leo.bootcampglobant.finalshoppingcart.models.Product;
 import com.leo.bootcampglobant.finalshoppingcart.repositories.CategoryRepository;
+import com.leo.bootcampglobant.finalshoppingcart.repositories.DiscountRepository;
 import com.leo.bootcampglobant.finalshoppingcart.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -21,11 +21,16 @@ public class ProductServiceImpl implements ProductService {
 
   private final ProductRepository productRepository;
   private final CategoryRepository categoryRepository;
+  private final DiscountRepository discountRepository;
 
-  public ProductServiceImpl(ProductRepository productRepository,
-      CategoryRepository categoryRepository) {
+  public ProductServiceImpl(
+      ProductRepository productRepository,
+      CategoryRepository categoryRepository,
+      DiscountRepository discountRepository) {
+
     this.productRepository = productRepository;
     this.categoryRepository = categoryRepository;
+    this.discountRepository = discountRepository;
   }
 
   @Override
@@ -86,7 +91,8 @@ public class ProductServiceImpl implements ProductService {
     return new PropertyValidationException(field, message);
   }
 
-  private Product saveProduct(Product product) {
+  @Override
+  public Product saveProduct(Product product) {
     try {
       return productRepository.save(product);
     } catch (ConstraintViolationException e) {
@@ -147,5 +153,10 @@ public class ProductServiceImpl implements ProductService {
     } catch (Exception e) {
       return false;
     }
+  }
+
+  @Override
+  public List<Product> persist(List<Product> products) {
+    return this.productRepository.saveAll(products);
   }
 }

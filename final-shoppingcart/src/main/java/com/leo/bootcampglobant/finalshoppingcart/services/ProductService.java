@@ -14,10 +14,12 @@ public interface ProductService {
   List<Product> getProductsByWordInName(String productName);
   Category getCategoryById(Long categoryId);
   List<Category> getAllCategories();
+  Product saveProduct(Product product);
   Product createProduct(Product product, Long categoryId);
   Product replaceProduct(Product product);
   Product replaceCategory(Long productId, Long categoryId);
   boolean deleteProductById(Long id);
   Category createCategory(Category category);
+  List<Product> persist(List<Product> products);
 
 }

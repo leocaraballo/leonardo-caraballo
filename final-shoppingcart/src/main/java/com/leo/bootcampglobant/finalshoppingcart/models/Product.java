@@ -1,6 +1,8 @@
 package com.leo.bootcampglobant.finalshoppingcart.models;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -29,6 +34,13 @@ public class Product {
   @Positive
   @NotNull
   private BigDecimal price;
+  @ManyToMany
+  @JoinTable(name = "product_discount",
+      joinColumns = @JoinColumn(name = "product_id"),
+      inverseJoinColumns = @JoinColumn(name = "discount_id")
+  )
+  @JoinColumn(name = "discount_id")
+  private List<Discount> discounts = new ArrayList<>();
 
   public Product(Category category,
       @Size(min = 2, max = 255) @NotNull String name,
@@ -78,6 +90,23 @@ public class Product {
 
   public void setPrice(BigDecimal price) {
     this.price = price;
+  }
+
+  public List<Discount> getDiscounts() {
+    return discounts;
+  }
+
+  public void setDiscounts(
+      List<Discount> discounts) {
+    this.discounts = discounts;
+  }
+
+  public BigDecimal getFinalPrice() {
+    BigDecimal totalDiscount =
+        this.discounts.stream().map(Discount::getPercentage)
+            .reduce(BigDecimal.ZERO, BigDecimal::add).min(BigDecimal.ONE);
+
+    return this.price.multiply(BigDecimal.ONE.subtract(totalDiscount));
   }
 
   @Override
