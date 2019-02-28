@@ -23,6 +23,13 @@ public class ItemDetail {
   @NotNull
   private int quantity;
 
+  public ItemDetail(Long id, Product product,
+      @Positive @NotNull int quantity) {
+    this.id = id;
+    this.product = product;
+    this.quantity = quantity;
+  }
+
   public ItemDetail(Product product, int quantity) {
     this.product = product;
     this.quantity = quantity;

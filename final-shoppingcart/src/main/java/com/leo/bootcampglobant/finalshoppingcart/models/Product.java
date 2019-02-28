@@ -42,6 +42,15 @@ public class Product {
   @JoinColumn(name = "discount_id")
   private List<Discount> discounts = new ArrayList<>();
 
+  public Product(Long id, Category category,
+      @Size(min = 2, max = 255) @NotNull String name,
+      @Positive @NotNull BigDecimal price) {
+    this.id = id;
+    this.category = category;
+    this.name = name;
+    this.price = price;
+  }
+
   public Product(Category category,
       @Size(min = 2, max = 255) @NotNull String name,
       @Positive @NotNull BigDecimal price) {

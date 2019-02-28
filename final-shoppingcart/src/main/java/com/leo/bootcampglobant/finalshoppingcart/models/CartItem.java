@@ -1,12 +1,19 @@
 package com.leo.bootcampglobant.finalshoppingcart.models;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Entity
 public class CartItem extends ItemDetail {
 
   public CartItem(Product product, int quantity) {
     super(product, quantity);
+  }
+
+  public CartItem(Long id, Product product,
+      @Positive @NotNull int quantity) {
+    super(id, product, quantity);
   }
 
   public CartItem() {

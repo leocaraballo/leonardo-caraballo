@@ -2,6 +2,8 @@ package com.leo.bootcampglobant.finalshoppingcart.models;
 
 import java.math.BigDecimal;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Entity
 public class OrderLine extends ItemDetail {
@@ -10,6 +12,13 @@ public class OrderLine extends ItemDetail {
 
   public OrderLine(Product product, int quantity) {
     super(product, quantity);
+    this.cost = product.getFinalPrice().multiply(new BigDecimal(quantity));
+  }
+
+  public OrderLine(Long id, Product product,
+      @Positive @NotNull int quantity) {
+
+    super(id, product, quantity);
     this.cost = product.getFinalPrice().multiply(new BigDecimal(quantity));
   }
 
