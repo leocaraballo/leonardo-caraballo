@@ -31,6 +31,28 @@ public class ProductController {
     return productService.getAllProducts();
   }
 
+  @GetMapping(value = "/find", params = "productName")
+  public Product getProductByName(@RequestParam(name = "productName") String productName) {
+    return productService.getProductByName(productName);
+  }
+
+  @GetMapping(value = "/find", params = "categoryId")
+  public List<Product> getProductsByCategoryId(@RequestParam(name = "categoryId") Long categoryId) {
+    return productService.getProductsByCategoryId(categoryId);
+  }
+
+  @GetMapping(value = "/find", params = "categoryName")
+  public List<Product> getProductsByCategoryName(
+      @RequestParam(name = "categoryName") String categoryName) {
+
+    return productService.getProductsByCategoryName(categoryName);
+  }
+
+  @GetMapping(value = "/find", params = "containing")
+  public List<Product> getProductsContaining(@RequestParam(name = "containing") String containing) {
+    return productService.getProductsByWordInName(containing);
+  }
+
   @GetMapping("/categories")
   public List<Category> getAllCategories() {
     return productService.getAllCategories();
@@ -51,7 +73,6 @@ public class ProductController {
   public Product getProductById(@PathVariable Long productId) {
     return productService.getProductById(productId);
   }
-
 
   @PutMapping("/{productId}")
   public Product replaceProduct(@RequestBody Product product, @PathVariable Long productId) {

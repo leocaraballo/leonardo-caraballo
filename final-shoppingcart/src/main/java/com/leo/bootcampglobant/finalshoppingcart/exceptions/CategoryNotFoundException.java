@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class CategoryNotFoundException extends RuntimeException {
 
   private static final String MESSAGE_PRE = "Couldn't find the category with the id ";
+  private static final String MESSAGE_NAME_PRE = "Couldn't find the category with the name of ";
 
   /**
-   * Construct a CategoryNotFoundException with the message 'Couldn't find the category with
-   * the id {@code id}', where {@code id} is the value.
+   * Construct a CategoryNotFoundException with the message 'Couldn't find the category with the id
+   * {@code id}', where {@code id} is the value.
    *
    * <p>Example: 'Couldn't find the category with the id {5}'</p>
    *
@@ -23,6 +24,18 @@ public class CategoryNotFoundException extends RuntimeException {
    */
   public CategoryNotFoundException(Long id) {
     super(MESSAGE_PRE + id);
+  }
+
+  /**
+   * Construct a CategoryNotFoundException with the message 'Couldn't find the category with the name of
+   * {@code categoryName}'
+   *
+   * <p>Example: 'Couldn't find the category with the name of {Electronics}'</p>
+   *
+   * @param categoryName name of the category not found.
+   */
+  public CategoryNotFoundException(String categoryName) {
+    super(MESSAGE_NAME_PRE + categoryName);
   }
 
 }

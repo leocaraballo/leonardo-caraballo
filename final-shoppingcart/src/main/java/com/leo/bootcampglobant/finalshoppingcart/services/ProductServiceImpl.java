@@ -35,8 +35,36 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  public Product getProductByName(String productName) {
+    return productRepository.findByName(productName)
+        .orElseThrow(() -> new ProductNotFoundException(productName));
+  }
+
+  @Override
   public List<Product> getAllProducts() {
     return productRepository.findAll();
+  }
+
+  @Override
+  public List<Product> getProductsByCategoryId(Long categoryId) {
+    Category category = getCategoryById(categoryId);
+    return productRepository.findByCategory(category);
+  }
+
+  @Override
+  public List<Product> getProductsByCategoryName(String categoryName) {
+    Category category = getCategoryByName(categoryName);
+    return productRepository.findByCategory(category);
+  }
+
+  @Override
+  public List<Product> getProductsByWordInName(String productName) {
+    return productRepository.findByNameContaining(productName);
+  }
+
+  private Category getCategoryByName(String categoryName) {
+    return categoryRepository.findByName(categoryName)
+        .orElseThrow(() -> new CategoryNotFoundException(categoryName));
   }
 
   @Override
