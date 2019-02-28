@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "orders")
@@ -23,6 +24,7 @@ public class Order {
   @OneToMany
   @JoinColumn(name = "order_line_id")
   private List<OrderLine> items = new ArrayList<>();
+  @NotNull
   private LocalDateTime timestamp;
 
   public Order(Long id, List<OrderLine> items, LocalDateTime timestamp) {
