@@ -1,6 +1,8 @@
 package com.leo.bootcampglobant.finalshoppingcart.services;
 
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.CannotChangeUserException;
+import com.leo.bootcampglobant.finalshoppingcart.exceptions.IncorrectPasswordException;
+import com.leo.bootcampglobant.finalshoppingcart.exceptions.PermissionDeniedException;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.PropertyValidationException;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.AlreadyCreatedException;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.UserNotFoundException;
@@ -11,6 +13,8 @@ import com.leo.bootcampglobant.finalshoppingcart.repositories.OrderLineRepositor
 import com.leo.bootcampglobant.finalshoppingcart.repositories.OrderRepository;
 import com.leo.bootcampglobant.finalshoppingcart.repositories.ShoppingCartRepository;
 import com.leo.bootcampglobant.finalshoppingcart.repositories.UserRepository;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.ConstraintViolationException;
@@ -21,13 +25,18 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final OrderRepository orderRepository;
+
   private final ShoppingCartRepository shoppingCartRepository;
   private final OrderLineRepository orderLineRepository;
 
-  public UserServiceImpl(UserRepository userRepository,
+  private final SecureRandom random = new SecureRandom();
+
+  public UserServiceImpl(
+      UserRepository userRepository,
       OrderRepository orderRepository,
       ShoppingCartRepository shoppingCartRepository,
       OrderLineRepository orderLineRepository) {
+
     this.userRepository = userRepository;
     this.orderRepository = orderRepository;
     this.shoppingCartRepository = shoppingCartRepository;
@@ -63,6 +72,9 @@ public class UserServiceImpl implements UserService {
   @Override
   public User createUser(User user) {
     try {
+      user.setToken(random.nextLong());
+      user.setSessionStartTimestamp(LocalDateTime.now());
+
       ShoppingCart shoppingCart = new ShoppingCart(user);
       shoppingCartRepository.save(shoppingCart);
       user = userRepository.save(user);
@@ -90,6 +102,7 @@ public class UserServiceImpl implements UserService {
       e.setFirstName(user.getFirstName());
       e.setLastName(user.getLastName());
       e.setPassword(user.getPassword());
+      e.setEmail(user.getEmail());
       return userRepository.save(e);
     }).orElseThrow(() -> new UserNotFoundException("id of " + user.getId()));
   }
@@ -112,5 +125,21 @@ public class UserServiceImpl implements UserService {
     user.getOrders().add(order);
     userRepository.save(user);
     return order;
+  }
+
+  @Override
+  public User login(String username, String password) {
+    User user = getUserByUsername(username);
+    if (!user.getPassword().equals(password)) {
+      throw new IncorrectPasswordException();
+    }
+    user.setSessionStartTimestamp(LocalDateTime.now());
+    user.setToken(random.nextLong());
+    return userRepository.save(user);
+  }
+
+  @Override
+  public User authorization(Long token) {
+    return userRepository.findByToken(token).orElseThrow(PermissionDeniedException::new);
   }
 }

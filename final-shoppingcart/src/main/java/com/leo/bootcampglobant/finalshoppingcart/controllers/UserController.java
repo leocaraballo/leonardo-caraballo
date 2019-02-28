@@ -1,5 +1,7 @@
 package com.leo.bootcampglobant.finalshoppingcart.controllers;
 
+import com.leo.bootcampglobant.finalshoppingcart.exceptions.PermissionDeniedException;
+import com.leo.bootcampglobant.finalshoppingcart.models.Role;
 import com.leo.bootcampglobant.finalshoppingcart.models.User;
 import com.leo.bootcampglobant.finalshoppingcart.services.UserService;
 import java.util.List;
@@ -25,50 +27,91 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping
-  public List<User> getAllUsers() {
+  private void onlyAdmin(Long token) {
+    if (userService.authorization(token).getRole() != Role.ADMIN) {
+      throw new PermissionDeniedException();
+    }
+  }
+
+  private void verifyUser(Long token, Long userId) {
+    try {
+      onlyAdmin(token);
+    } catch (Exception e) {
+      if (!userService.authorization(token).getId().equals(userId)) {
+        throw new PermissionDeniedException();
+      }
+    }
+  }
+
+  @GetMapping(params = "token")
+  public List<User> getAllUsers(@RequestParam(value = "token") Long token) {
+
+    onlyAdmin(token);
     return userService.getAllUsers();
   }
 
   @PostMapping
   public User createUser(@RequestBody User user) {
+    user.setRole(Role.NORMAL);
     return userService.createUser(user);
   }
 
-  @GetMapping(params = "lastName")
+  @GetMapping(value = "/login", params = {"username", "password"})
+  public User login(@RequestParam(value = "username") String username,
+      @RequestParam(value = "password") String password) {
+
+    return userService.login(username, password);
+  }
+
+  @GetMapping(params = {"token", "lastName"})
   public List<User> getUsersByLastName(
+      @RequestParam(value = "token") Long token,
       @RequestParam(value = "lastName") String lastName) {
 
+    onlyAdmin(token);
     return userService.getUserByLastName(lastName);
   }
 
-  @GetMapping(params = "firstName")
+  @GetMapping(params = {"token", "firstName"})
   public List<User> getUsersByFirstName(
+      @RequestParam(value = "token") Long token,
       @RequestParam(value = "firstName") String firstName) {
 
+    onlyAdmin(token);
     return userService.getUserByFirstName(firstName);
   }
 
-  @GetMapping("/{username:[a-zA-Z]+}")
-  public User getUserByUsername(@PathVariable String username) {
+  @GetMapping(value = "/{username:[a-zA-Z]+}", params = "token")
+  public User getUserByUsername(@RequestParam(value = "token") Long token,
+      @PathVariable String username) {
+
+    onlyAdmin(token);
     return userService.getUserByUsername(username);
   }
 
-  @GetMapping("/{id:[0-9]+}")
-  public User getUserById(@PathVariable Long id) {
+  @GetMapping(value = "/{id:[0-9]+}", params = "token")
+  public User getUserById(@RequestParam(value = "token") Long token,
+      @PathVariable Long id) {
+
+    onlyAdmin(token);
     return userService.getUserById(id);
   }
 
-  @PutMapping("/{id}")
-  public User replaceUser(@RequestBody User user, @PathVariable Long id) {
+  @PutMapping(value = "/{id}", params = "token")
+  public User replaceUser(@RequestParam(value = "token") Long token,
+      @RequestBody User user, @PathVariable Long id) {
+
+    verifyUser(token, id);
     user.setId(id);
     return userService.replaceUser(user);
   }
 
-  @DeleteMapping("/{id}")
-  public boolean deleteUser(@PathVariable Long id) {
+  @DeleteMapping(value = "/{id}", params = "token")
+  public boolean deleteUser(@RequestParam(value = "token") Long token,
+      @PathVariable Long id) {
+
+    verifyUser(token, id);
     return userService.deleteUserById(id);
   }
-
 
 }

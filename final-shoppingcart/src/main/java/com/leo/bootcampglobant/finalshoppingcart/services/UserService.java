@@ -15,5 +15,6 @@ public interface UserService {
   User replaceUser(User user);
   boolean deleteUserById(Long id);
   Order createOrder(Long userId, Order order);
-
+  User login(String username, String password);
+  User authorization(Long token);
 }

@@ -2,6 +2,7 @@ package com.leo.bootcampglobant.finalshoppingcart.config;
 
 import com.leo.bootcampglobant.finalshoppingcart.models.Category;
 import com.leo.bootcampglobant.finalshoppingcart.models.Product;
+import com.leo.bootcampglobant.finalshoppingcart.models.Role;
 import com.leo.bootcampglobant.finalshoppingcart.models.User;
 import com.leo.bootcampglobant.finalshoppingcart.services.ProductService;
 import com.leo.bootcampglobant.finalshoppingcart.services.ShoppingCartService;
@@ -60,16 +61,19 @@ public class FillDataOnStart implements CommandLineRunner {
     );
 
     userService.createUser(
-        new User("Eamon", "Andrew", "eamondrew", "password")
+        new User("admin", "admin", "admin", "admin", "admin", Role.ADMIN)
     );
     userService.createUser(
-        new User("Celine", "Monaghan", "celinee", "asdf1234")
+        new User("Eamon", "Andrew", "eamondrew", "password", "eamondrew@gmail.com")
     );
     userService.createUser(
-        new User("Ivor", "Andrew", "theandrews", "random64")
+        new User("Celine", "Monaghan", "celinee", "asdf1234", "ceeel@hotmail.com")
     );
     userService.createUser(
-        new User("Celine", "Fitzgerald", "fitzboss", "7jkj78f_s2")
+        new User("Ivor", "Andrew", "theandrews", "random64", "drewsdrews@yahoo.com")
+    );
+    userService.createUser(
+        new User("Celine", "Fitzgerald", "fitzboss", "7jkj78f_s2", "fitz90@gmail.com")
     );
 
     shoppingCartService.addToCart(1L, 1L, 2);
