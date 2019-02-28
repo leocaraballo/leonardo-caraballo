@@ -3,6 +3,7 @@ package com.leo.bootcampglobant.finalshoppingcart.services;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.EmptyCartException;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.OrderLineNotFoundException;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.ProductAlreadyInCartException;
+import com.leo.bootcampglobant.finalshoppingcart.exceptions.PropertyValidationException;
 import com.leo.bootcampglobant.finalshoppingcart.exceptions.UserNotFoundException;
 import com.leo.bootcampglobant.finalshoppingcart.models.CartItem;
 import com.leo.bootcampglobant.finalshoppingcart.models.Order;
@@ -10,6 +11,8 @@ import com.leo.bootcampglobant.finalshoppingcart.models.Product;
 import com.leo.bootcampglobant.finalshoppingcart.models.ShoppingCart;
 import com.leo.bootcampglobant.finalshoppingcart.repositories.CartItemRepository;
 import com.leo.bootcampglobant.finalshoppingcart.repositories.ShoppingCartRepository;
+import java.util.ArrayList;
+import javax.validation.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -66,7 +69,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     try {
       getCartItemByProductIdFromCart(shoppingCart, productId);
     } catch (OrderLineNotFoundException e) {
-      CartItem cartItem = cartItemRepository.save(new CartItem(product, quantity));
+      CartItem cartItem;
+      try {
+        cartItem = cartItemRepository.save(new CartItem(product, quantity));
+      } catch (ConstraintViolationException cve) {
+        var validationInfo = new ArrayList<>(cve.getConstraintViolations()).get(0);
+        String field = validationInfo.getPropertyPath().toString();
+        String message = validationInfo.getMessage();
+        throw new PropertyValidationException(field, message);
+      }
       shoppingCart.getCurrentItems().add(cartItem);
       shoppingCartRepository.save(shoppingCart);
       return cartItem;

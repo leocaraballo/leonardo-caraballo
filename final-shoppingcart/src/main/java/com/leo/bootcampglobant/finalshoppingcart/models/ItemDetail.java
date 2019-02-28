@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @MappedSuperclass
 public class ItemDetail {
@@ -17,6 +19,8 @@ public class ItemDetail {
   @ManyToOne(optional = false)
   @JoinColumn(name = "product_id", nullable = false)
   private Product product;
+  @Positive
+  @NotNull
   private int quantity;
 
   public ItemDetail(Product product, int quantity) {
